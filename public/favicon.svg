@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Family Cancer Risk Assistant">
+  <rect width="64" height="64" rx="14" fill="#0f766e"/>
+  <path d="M32 49C20 41 14 34.5 14 27.5 14 21.7 18.5 17 24.2 17c3.2 0 6.2 1.5 8 3.9 1.8-2.4 4.8-3.9 8-3.9C45.9 17 50 21.7 50 27.5 50 34.5 44 41 32 49z" fill="#ccfbf1"/>
+  <circle cx="32" cy="29" r="5" fill="#0f766e"/>
+</svg>

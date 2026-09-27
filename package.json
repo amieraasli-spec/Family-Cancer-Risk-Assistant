@@ -1,0 +1,23 @@
+{
+  "name": "family-cancer-risk-assistant",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Bilingual, guideline-anchored family cancer risk screening assistant (research/education prototype).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src api --ext .js,.jsx"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.2",
+    "vite": "^5.4.11"
+  }
+}
