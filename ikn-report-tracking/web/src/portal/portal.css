@@ -1,0 +1,219 @@
+/*
+ * The applicant portal's own sheet.
+ *
+ * Deliberately small: three steps at most, generous type, large targets, and no
+ * staff component anywhere near it. It fits a 10-inch tablet in portrait without
+ * scrolling, and on a phone it stacks rather than shrinking the text.
+ */
+
+.portal {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-page);
+}
+
+.portal__banner {
+  background: var(--status-warning);
+  color: #1a1a19;
+  padding: 7px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.portal__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border);
+}
+
+.portal__brand { display: flex; flex-direction: column; gap: 1px; }
+.portal__brand strong { font-size: 18px; }
+.portal__brand span { font-size: 13px; color: var(--text-secondary); }
+
+.portal__lang { display: flex; gap: 4px; }
+.portal__lang button {
+  min-height: 40px;
+  min-width: 52px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.portal__lang button[aria-pressed="true"] {
+  background: var(--series-1);
+  border-color: var(--series-1);
+  color: #ffffff;
+}
+
+.portal__main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.portal__card {
+  width: 100%;
+  max-width: 640px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/*
+ * Tighten the vertical rhythm when the viewport is short, so the whole status
+ * screen — including the privacy footer — fits a 10-inch tablet in portrait with
+ * browser chrome present. Density is reduced; nothing is clipped and no font
+ * shrinks below 15px.
+ */
+@media (max-height: 960px) {
+  .portal__main { padding: 12px; }
+  .portal__card { padding: 16px; gap: 11px; }
+  .portal h1 { font-size: 20px; }
+  .status__dates { gap: 8px; }
+  .status__date { padding: 7px 10px; }
+  .status__date dd { font-size: 16px; }
+  .portal__contact { padding-top: 9px; }
+  .portal__foot { padding: 9px 16px; }
+}
+
+.portal__step { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+.portal h1 { font-size: 22px; margin: 0; line-height: 1.25; }
+.portal h2 { font-size: 18px; margin: 0; }
+.portal p { margin: 0; font-size: 16px; line-height: 1.5; }
+
+.portal__field { display: flex; flex-direction: column; gap: 6px; }
+.portal__field label { font-size: 15px; font-weight: 600; }
+.portal__field .hint { font-size: 14px; color: var(--text-secondary); }
+.portal__field input {
+  min-height: 52px;
+  padding: 0 12px;
+  font-size: 19px;
+  letter-spacing: 0.06em;
+  border: 2px solid var(--axis);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+}
+.portal__field input:focus-visible { border-color: var(--series-1); }
+
+.portal__btn {
+  min-height: 52px;
+  padding: 0 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--series-1);
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.portal__btn:disabled { opacity: 0.5; cursor: progress; }
+.portal__btn--quiet {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+
+/* The status result. The stage badge pairs an icon with its label, so the state is
+   never carried by colour alone. */
+.status__stage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+.status__icon { font-size: 22px; line-height: 1; }
+.status__stage-text { display: flex; flex-direction: column; gap: 2px; }
+.status__stage-text strong { font-size: 18px; }
+.status__stage-text span { font-size: 14px; color: var(--text-secondary); }
+.status__stage--ready { border-color: var(--status-good); }
+.status__stage--action { border-color: var(--status-warning); }
+.status__stage--closed { border-color: var(--axis); }
+
+.status__dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.status__date {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 11px;
+  background: var(--surface-raised);
+}
+.status__date dt { font-size: 13px; color: var(--text-secondary); font-weight: 600; margin: 0; }
+.status__date dd { margin: 2px 0 0; font-size: 17px; font-weight: 700; }
+
+.status__next {
+  border-left: 4px solid var(--series-1);
+  padding: 4px 0 4px 12px;
+}
+.status__next strong { display: block; font-size: 14px; color: var(--text-secondary); }
+
+.status__ref {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+}
+
+.status__list { margin: 6px 0 0; padding-left: 20px; font-size: 15px; line-height: 1.5; }
+.status__list li { margin-bottom: 4px; }
+
+.portal__contact {
+  border-top: 1px solid var(--grid);
+  padding-top: 12px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.portal__foot {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  border-top: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+
+.portal__error {
+  border: 1px solid var(--status-critical);
+  background: color-mix(in srgb, var(--status-critical) 10%, var(--surface-1));
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.portal__delay {
+  border: 1px solid var(--status-warning);
+  background: color-mix(in srgb, var(--status-warning) 14%, var(--surface-1));
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+@media (max-width: 520px) {
+  .status__dates { grid-template-columns: 1fr; }
+}

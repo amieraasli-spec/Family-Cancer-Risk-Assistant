@@ -1,0 +1,478 @@
+/*
+ * Design tokens.
+ *
+ * The chart palette is the validated reference instance from the data-visualisation
+ * method: the categorical slots this application uses (blue, orange, aqua, yellow)
+ * pass the lightness band, chroma floor, CVD separation and normal-vision floor in
+ * both light and dark mode. Three light-mode slots sit below 3:1 against the light
+ * surface, so every chart that uses them ships visible direct labels and a table
+ * view — the documented relief.
+ *
+ * Layout constraint the whole sheet is built around: a 10-inch tablet in portrait
+ * at 768 × 1024 CSS pixels, with browser chrome taking part of the height. Content
+ * areas size themselves from the real viewport (`100dvh`) rather than assuming the
+ * height, and when text is enlarged the layout reduces cards and rows rather than
+ * clipping. Zoom is never disabled.
+ */
+
+:root {
+  color-scheme: light;
+
+  --surface-1: #fcfcfb;
+  --surface-page: #f9f9f7;
+  --surface-raised: #ffffff;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+
+  /* Sequential blue ramp, used only for the heatmap's magnitude encoding. */
+  --seq-100: #cde2fb;
+  --seq-200: #9ec5f4;
+  --seq-300: #6da7ec;
+  --seq-400: #3987e5;
+  --seq-500: #256abf;
+  --seq-600: #184f95;
+  --seq-700: #0d366b;
+  /* Reserved "no data" swatch. Grey means unavailable, never zero. */
+  --no-data: #e8e7e2;
+
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-serious: #ec835a;
+  --status-critical: #d03b3b;
+
+  --radius: 8px;
+  --radius-sm: 4px;
+  --gap: 12px;
+  --gap-sm: 8px;
+  --pad: 14px;
+
+  /* Body text stays at least 16px so a tablet never forces a tiny font. */
+  --font-body: 16px;
+  --font-small: 14px;
+  --font-micro: 13px;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --surface-page: #0d0d0d;
+    --surface-raised: #232322;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10);
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --no-data: #33332f;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-1: #1a1a19;
+  --surface-page: #0d0d0d;
+  --surface-raised: #232322;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --no-data: #33332f;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font: var(--font-body)/1.45 var(--font);
+  /* No horizontal page scroll, ever. */
+  overflow-x: hidden;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* Visible focus on every interactive element. */
+:is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--series-1);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ------------------------------------------------------------------ layout */
+
+.app {
+  display: grid;
+  /* Real viewport height, so browser chrome cannot push content off screen. */
+  grid-template-rows: auto auto 1fr auto;
+  height: 100dvh;
+  max-width: 100%;
+}
+
+.app__banner {
+  background: var(--status-warning);
+  color: #1a1a19;
+  padding: 5px var(--pad);
+  font-size: var(--font-micro);
+  font-weight: 600;
+  text-align: center;
+}
+
+.app__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--gap-sm) var(--pad);
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border);
+}
+
+.app__title { font-size: var(--font-small); font-weight: 700; margin: 0; }
+.app__meta { font-size: var(--font-micro); color: var(--text-secondary); }
+
+.app__main {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: var(--gap-sm) var(--pad);
+  gap: var(--gap-sm);
+  min-height: 0;
+}
+
+.app__foot {
+  display: flex;
+  gap: var(--gap-sm);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--gap-sm) var(--pad);
+  background: var(--surface-raised);
+  border-top: 1px solid var(--border);
+}
+
+/* Tabs: five, always reachable, 44px minimum touch target. */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  background: var(--surface-page);
+}
+
+.tabs__btn {
+  min-height: 44px;
+  border: none;
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  font-size: var(--font-small);
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+}
+
+.tabs__btn[aria-current="page"] {
+  color: var(--text-primary);
+  border-bottom-color: var(--series-1);
+  background: var(--surface-1);
+}
+
+.subnav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+}
+
+/* The chip strip is the only part that scrolls, and Previous/Next reach anything
+   that scrolls out of view, so no subpage is unreachable. */
+.subnav__chips {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-bottom: 2px;
+}
+
+.subnav__step {
+  min-height: 40px;
+  min-width: 44px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  font-size: 17px;
+  cursor: pointer;
+}
+.subnav__step:disabled { opacity: 0.4; cursor: not-allowed; }
+.subnav__count {
+  flex: 0 0 auto;
+  font-size: var(--font-micro);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.subnav__btn {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  font-size: var(--font-micro);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.subnav__btn[aria-current="true"] {
+  background: var(--series-1);
+  border-color: var(--series-1);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.btn {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  font-size: var(--font-small);
+  cursor: pointer;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn--primary { background: var(--series-1); border-color: var(--series-1); color: #ffffff; font-weight: 600; }
+
+/* ------------------------------------------------------------------ panels */
+
+.panel {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  min-height: 0;
+  flex: 1;
+}
+
+.panel__head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--gap-sm); }
+.panel__title { margin: 0; font-size: var(--font-small); font-weight: 700; }
+.panel__unit { font-size: var(--font-micro); color: var(--text-muted); }
+.panel__body { min-height: 0; flex: 1; display: flex; flex-direction: column; }
+
+/*
+ * Caption space is reserved, not squeezed. Both captions are mandatory on every
+ * analytical output, so the panel reserves room for them before the chart gets any.
+ */
+.captions {
+  border-top: 1px solid var(--grid);
+  padding-top: var(--gap-sm);
+  font-size: var(--font-micro);
+  line-height: 1.4;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.captions__label { font-weight: 700; color: var(--text-primary); }
+.captions__notice { color: var(--text-primary); font-weight: 600; }
+
+/* ------------------------------------------------------------------- cards */
+
+.cards {
+  display: grid;
+  /* Four cards maximum on a normal screen; two columns at tablet width. */
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap-sm);
+}
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card__label { font-size: var(--font-micro); color: var(--text-secondary); font-weight: 600; }
+.card__value { font-size: 30px; font-weight: 700; line-height: 1.1; }
+.card__value--small { font-size: 22px; }
+.card__unit { font-size: var(--font-micro); color: var(--text-muted); }
+/* A qualifier such as "month-to-date" must stay visible, but it is a footnote on the
+   card rather than a second paragraph, so it sets tighter than body copy. */
+.card__note { font-size: 12px; line-height: 1.25; color: var(--text-muted); }
+.card__parts { font-size: var(--font-micro); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.card__na { font-size: var(--font-small); color: var(--text-secondary); font-weight: 600; }
+
+/* ------------------------------------------------------------------ tables */
+
+.table-wrap { overflow: auto; min-height: 0; flex: 1; }
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-micro);
+}
+table.data th, table.data td {
+  border-bottom: 1px solid var(--grid);
+  padding: 7px 6px;
+  text-align: left;
+  vertical-align: top;
+}
+table.data th { color: var(--text-secondary); font-weight: 700; white-space: nowrap; }
+table.data td.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.data caption { text-align: left; font-size: var(--font-micro); color: var(--text-muted); padding-bottom: 4px; }
+
+/*
+ * The area a chart is measured against. It flexes to fill what the panel has left
+ * after the title, the filter echo and the reserved caption space. `ChartArea`
+ * measures this box and sizes the plot to whatever remains once the legend, notes
+ * and table toggle have taken their share — the chart is scaled to fit, never
+ * cropped to fit.
+ *
+ * `overflow: hidden` is the safety net rather than the mechanism: if that
+ * arithmetic is ever wrong, the browser-verification pass reports the hidden pixels.
+ */
+.chart-area {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ charts */
+
+.chart { width: 100%; display: block; }
+.chart text { font-family: var(--font); fill: var(--text-secondary); }
+.chart .axis-label { font-size: 11px; fill: var(--text-muted); }
+.chart .value-label { font-size: 11px; fill: var(--text-primary); font-weight: 600; }
+.chart .grid-line { stroke: var(--grid); stroke-width: 1; }
+.chart .axis-line { stroke: var(--axis); stroke-width: 1; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: var(--font-micro);
+  color: var(--text-secondary);
+}
+.legend__item { display: flex; align-items: center; gap: 5px; }
+.legend__swatch { width: 12px; height: 12px; border-radius: 3px; flex: 0 0 auto; }
+.legend__swatch--line { height: 3px; border-radius: 2px; }
+/* A scale legend reads as one continuous ramp, so its swatches sit flush. */
+.legend--tight { gap: 12px; row-gap: 4px; }
+.legend--tight .legend__swatch { width: 14px; height: 11px; border-radius: 2px; }
+
+.tooltip {
+  position: fixed;
+  z-index: 40;
+  pointer-events: none;
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  padding: 7px 9px;
+  font-size: var(--font-micro);
+  max-width: 260px;
+  line-height: 1.35;
+}
+.tooltip__title { font-weight: 700; margin-bottom: 2px; }
+
+/* --------------------------------------------------------------- utilities */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  align-items: flex-end;
+}
+.field { display: flex; flex-direction: column; gap: 2px; font-size: var(--font-micro); }
+.field label { color: var(--text-secondary); font-weight: 600; }
+.field select, .field input {
+  min-height: 40px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+}
+
+.notice {
+  border: 1px solid var(--status-warning);
+  background: color-mix(in srgb, var(--status-warning) 14%, var(--surface-1));
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: var(--font-micro);
+  line-height: 1.4;
+}
+.notice--info {
+  border-color: var(--border);
+  background: var(--surface-raised);
+}
+.notice--critical {
+  border-color: var(--status-critical);
+  background: color-mix(in srgb, var(--status-critical) 12%, var(--surface-1));
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: var(--font-micro);
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+.pill--overdue { background: color-mix(in srgb, var(--status-critical) 16%, transparent); }
+.pill--due { background: color-mix(in srgb, var(--status-warning) 22%, transparent); }
+.pill--ok { background: color-mix(in srgb, var(--status-good) 14%, transparent); }
+
+.stack { display: flex; flex-direction: column; gap: var(--gap-sm); min-height: 0; }
+.row { display: flex; gap: var(--gap-sm); align-items: center; flex-wrap: wrap; }
+.grow { flex: 1; min-height: 0; }
+.muted { color: var(--text-secondary); font-size: var(--font-micro); }
+.error { color: var(--status-critical); font-size: var(--font-small); font-weight: 600; }
+
+/*
+ * At larger text settings and smaller screens the layout reduces density and adds
+ * steps. It never clips content and never disables zoom.
+ */
+@media (max-height: 720px), (max-width: 420px) {
+  .cards { grid-template-columns: 1fr; }
+  .card__value { font-size: 24px; }
+}

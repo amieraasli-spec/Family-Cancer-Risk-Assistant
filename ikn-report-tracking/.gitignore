@@ -1,0 +1,13 @@
+node_modules/
+dist/
+var/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+.env
+.env.local
+
+# Browser-verification output: screenshots and ad-hoc debug scripts.
+var/screens/
+var/*.mjs

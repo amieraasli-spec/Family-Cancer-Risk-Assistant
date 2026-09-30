@@ -1,0 +1,19 @@
+doctor_id,doctor_name,department,email
+DEMO-D001,Dr Demo 01,Radiotherapy & Oncology,doctor1@example.invalid
+DEMO-D002,Dr Demo 02,Radiotherapy & Oncology,doctor2@example.invalid
+DEMO-D003,Dr Demo 03,Radiotherapy & Oncology,doctor3@example.invalid
+DEMO-D004,Dr Demo 04,Surgery,doctor4@example.invalid
+DEMO-D005,Dr Demo 05,Surgery,doctor5@example.invalid
+DEMO-D006,Dr Demo 06,Surgery,doctor6@example.invalid
+DEMO-D007,Dr Demo 07,Gynaecological Oncology,doctor7@example.invalid
+DEMO-D008,Dr Demo 08,Gynaecological Oncology,doctor8@example.invalid
+DEMO-D009,Dr Demo 09,Gynaecological Oncology,doctor9@example.invalid
+DEMO-D010,Dr Demo 10,Nuclear Medicine,doctor10@example.invalid
+DEMO-D011,Dr Demo 11,Nuclear Medicine,doctor11@example.invalid
+DEMO-D012,Dr Demo 12,Nuclear Medicine,doctor12@example.invalid
+DEMO-D013,Dr Demo 13,Palliative & Supportive Care,doctor13@example.invalid
+DEMO-D014,Dr Demo 14,Palliative & Supportive Care,doctor14@example.invalid
+DEMO-D015,Dr Demo 15,Palliative & Supportive Care,doctor15@example.invalid
+DEMO-D016,Dr Demo 16,Oral & Maxillofacial Surgery,doctor16@example.invalid
+DEMO-D017,Dr Demo 17,Oral & Maxillofacial Surgery,doctor17@example.invalid
+DEMO-D018,Dr Demo 18,Oral & Maxillofacial Surgery,doctor18@example.invalid
