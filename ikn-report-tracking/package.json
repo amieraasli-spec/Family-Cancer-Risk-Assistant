@@ -22,7 +22,8 @@
     "test": "tsx --test --test-reporter=spec tests/*.test.ts",
     "preview": "vite preview",
     "test:ui": "node var/verify-ui.mjs",
-    "verify": "npm run typecheck && npm test"
+    "verify": "npm run typecheck && npm test",
+    "reconcile": "tsx scripts/reconcile.ts"
   },
   "dependencies": {
     "express": "^4.21.2",

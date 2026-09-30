@@ -55,8 +55,14 @@ CLAIM_COLUMNS = [
     "payment_reference_demo", "claim_form_reference_demo", "return_or_rejection_reason",
 ]
 DOCTOR_COLUMNS = ["doctor_id", "doctor_name", "department", "email"]
+# The workbook's own monthly counts, kept as an independent cross-check on the
+# seeder. `due_reports` and `on_time_due_reports` are the workbook's due-cohort
+# numerator and denominator, computed on a calendar with no public holidays; they
+# are compared against this application's own in `scripts/reconcile.ts`, not used
+# as a source of KPI values.
 KPI_COLUMNS = [
     "month_start", "data_through", "period_status", "received", "completed", "cancelled",
+    "due_reports", "on_time_due_reports", "late_or_unfinished", "open_at_cutoff",
 ]
 
 
