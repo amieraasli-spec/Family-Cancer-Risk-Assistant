@@ -279,13 +279,10 @@ export function reportsPanels(handle: Handle, request: PanelRequest, page: numbe
       'applications', queue, C.queueCaptions(ctx, queue), echo),
     exceptions: panel('reports.exceptions', 'Data-quality exceptions', 'applications',
       M.dataQualityExceptions(cohort),
-      {
-        howToRead: 'each row is a class of record the dashboard cannot measure correctly until '
-          + 'somebody fixes it.',
-        whatThisShows: describeExceptions(M.dataQualityExceptions(cohort), label),
-        ...(settings().dataClass === 'SYNTHETIC'
-          ? { dataClassNotice: 'Demonstration data — not actual IKN performance.' } : {}),
-      }, echo),
+      C.composeCaptions(ctx,
+        'each row is a class of record the dashboard cannot measure correctly until somebody '
+        + 'fixes it.',
+        describeExceptions(M.dataQualityExceptions(cohort), label)), echo),
   };
 }
 
@@ -543,15 +540,12 @@ export function insightsPanels(handle: Handle, request: PanelRequest) {
           + 'state and specialist hospitals. IKN’s own approved target, cohort and exclusions '
           + 'are unconfirmed, so no metric here is labelled an official KKM KPI.',
       },
-      {
-        howToRead: 'each metric shows its exact definition, its numerator and denominator, and '
-          + 'the cases it excludes.',
-        whatThisShows: `Values are for ${monthLabel(request.month)} under formula version `
-          + `${FORMULA_VERSION}, SLA rule ${cohort.sla.slaRuleVersion} and calendar `
-          + `${cohort.calendar.calendarVersion}.`,
-        ...(settings().dataClass === 'SYNTHETIC'
-          ? { dataClassNotice: 'Demonstration data — not actual IKN performance.' } : {}),
-      }, echo),
+      C.composeCaptions(monthCtx,
+        'each metric shows its exact definition, its numerator and denominator, and the cases '
+        + 'it excludes.',
+        `Values are for ${monthLabel(request.month)} under formula version ${FORMULA_VERSION}, `
+        + `SLA rule ${cohort.sla.slaRuleVersion} and calendar `
+        + `${cohort.calendar.calendarVersion}.`), echo),
 
     trend: panel('insights.trend', 'Monthly received and completed', 'applications',
       trend, C.trendCaptions(ctx, trend), echo),
@@ -600,14 +594,10 @@ export function forecastPanel(handle: Handle, request: PanelRequest) {
 
   if (!forecast.available) {
     return panel('insights.forecast', 'Monthly application forecast', 'applications', forecast,
-      {
-        howToRead,
-        whatThisShows: `${forecast.message} ${forecast.completeMonths} complete month`
-          + `${forecast.completeMonths === 1 ? '' : 's'} of history are available and `
-          + `${forecast.requiredMonths} are required, so no forecast is shown.`,
-        ...(settings().dataClass === 'SYNTHETIC'
-          ? { dataClassNotice: 'Demonstration data — not actual IKN performance.' } : {}),
-      }, echo);
+      C.composeCaptions(ctx, howToRead,
+        `${forecast.message} ${forecast.completeMonths} complete month`
+        + `${forecast.completeMonths === 1 ? '' : 's'} of history are available and `
+        + `${forecast.requiredMonths} are required, so no forecast is shown.`), echo);
   }
 
   // The backlog scenario's capacity assumption comes from observed completions over
@@ -634,9 +624,8 @@ export function forecastPanel(handle: Handle, request: PanelRequest) {
 
   return panel('insights.forecast', 'Monthly application forecast', 'applications',
     { forecast, scenario },
-    {
-      howToRead,
-      whatThisShows: `Fitted on ${forecast.history.length} complete months `
+    C.composeCaptions(ctx, howToRead,
+      `Fitted on ${forecast.history.length} complete months `
         + `(${forecast.trainingFrom} to ${forecast.trainingTo}) and generated at `
         + `${forecast.forecastGeneratedAt}. The model shown is `
         + `${forecast.selectedModel === 'ETS_A_Ad_N' ? 'ETS(A,Ad,N)' : `the trailing ${3}-month mean`}`
@@ -644,11 +633,8 @@ export function forecastPanel(handle: Handle, request: PanelRequest) {
         + `${validation.wape === null ? ' (WAPE not reported: total actual volume was zero)'
           : ` and WAPE of ${validation.wape.toFixed(1)}%`} over the last `
         + `${validation.origins.length} complete months. ${first.month} is projected at `
-        + `${Math.round(first.point)} applications, 80% interval `
-        + `${Math.round(first.lower80)}–${Math.round(first.upper80)}.`,
-      ...(settings().dataClass === 'SYNTHETIC'
-        ? { dataClassNotice: 'Demonstration data — not actual IKN performance.' } : {}),
-    }, echo);
+      + `${Math.round(first.point)} applications, 80% interval `
+      + `${Math.round(first.lower80)}–${Math.round(first.upper80)}.`), echo);
 }
 
 export function actionsPanel(
@@ -666,19 +652,16 @@ export function actionsPanel(
   const requirements = recommendations.recommendations
     .filter((r) => r.evidenceKind === 'POLICY_REQUIREMENT').length;
   return panel('insights.actions', 'Recommended actions', 'mixed', recommendations,
-    {
-      howToRead: 'each card states the indicator observed, the action recommended, who owns it '
-        + 'and when to review it. A card is a policy requirement only when an approved policy '
-        + 'passage is quoted on it; otherwise it is a management suggestion inferred from the '
-        + 'data. Nothing here takes effect until a person accepts it.',
-      whatThisShows: `${recommendations.recommendations.length} recommendation`
+    C.composeCaptions(context(request, label),
+      'each card states the indicator observed, the action recommended, who owns it and when to '
+      + 'review it. A card is a policy requirement only when an approved policy passage is '
+      + 'quoted on it; otherwise it is a management suggestion inferred from the data. Nothing '
+      + 'here takes effect until a person accepts it.',
+      `${recommendations.recommendations.length} recommendation`
         + `${recommendations.recommendations.length === 1 ? '' : 's'} were generated for `
         + `${label} from ${cohort.applications.length} applications in scope; ${requirements} `
         + `${requirements === 1 ? 'is' : 'are'} supported by a quoted policy passage and `
         + `${recommendations.recommendations.length - requirements} `
-        + `${recommendations.recommendations.length - requirements === 1 ? 'is' : 'are'} `
-        + 'management suggestions with no verified policy source.',
-      ...(settings().dataClass === 'SYNTHETIC'
-        ? { dataClassNotice: 'Demonstration data — not actual IKN performance.' } : {}),
-    }, echo);
+      + `${recommendations.recommendations.length - requirements === 1 ? 'is' : 'are'} `
+      + 'management suggestions with no verified policy source.'), echo);
 }

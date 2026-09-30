@@ -39,6 +39,21 @@ function stripLabel(text: string): string {
   return text.replace(/^\s*(How to read this|How this is calculated|What this shows)\s*:\s*/i, '');
 }
 
+/**
+ * Builds a caption pair for a panel whose finding is composed by hand rather than by
+ * one of the builders below.
+ *
+ * Exported so there is exactly one place that strips the label and appends the
+ * data-class notice: a panel that assembled its own `Captions` object silently
+ * skipped the notice, and a cropped screenshot of it would have carried no sign that
+ * the figures were synthetic.
+ */
+export function composeCaptions(
+  ctx: CaptionContext, howToRead: string, whatThisShows: string,
+): Captions {
+  return withNotice(ctx, howToRead, whatThisShows);
+}
+
 function withNotice(ctx: CaptionContext, howToRead: string, whatThisShows: string): Captions {
   const captions: Captions = {
     howToRead: stripLabel(howToRead),

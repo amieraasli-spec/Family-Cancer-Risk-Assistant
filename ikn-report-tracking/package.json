@@ -19,8 +19,10 @@
     "db:reset": "tsx scripts/reset-db.ts",
     "db:seed": "tsx scripts/seed.ts",
     "data:extract": "python3 scripts/extract_workbook.py",
-    "test": "tsx --test tests/**/*.test.ts",
-    "preview": "vite preview"
+    "test": "tsx --test --test-reporter=spec tests/*.test.ts",
+    "preview": "vite preview",
+    "test:ui": "node var/verify-ui.mjs",
+    "verify": "npm run typecheck && npm test"
   },
   "dependencies": {
     "express": "^4.21.2",
